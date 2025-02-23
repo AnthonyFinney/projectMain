@@ -11,7 +11,7 @@ public class LikeService : ILikeService {
         this.repository = repository;
     }
 
-    public Task<Guid> GetLikesCoundAsync(Guid templateId) {
+    public Task<int> GetLikesCountAsync(Guid templateId) {
         throw new NotImplementedException();
     }
 

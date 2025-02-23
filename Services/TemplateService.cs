@@ -11,27 +11,51 @@ public class TemplateService : ITemplateService {
         this.repository = repository;
     }
 
-    public Task<Guid> CreateTemplateAsync(Template template) {
-        throw new NotImplementedException();
+    public async Task<bool> CreateTemplateAsync(Template template) {
+        if (template == null) {
+            return false;
+        }
+
+        await repository.AddAsync(template);
+        return true;
     }
 
-    public Task<bool> DeleteTemplateAsync(Guid templateId) {
-        throw new NotImplementedException();
+    public async Task<bool> DeleteTemplateAsync(Guid templateId) {
+        var template = await repository.GetByIdAsync(templateId);
+        if (template == null) {
+            return false;
+        }
+
+        await repository.DeleteAsync(templateId);
+        return true;
     }
 
-    public Task<IEnumerable<Template>> GetAllTemplatesAsync() {
-        throw new NotImplementedException();
+    public async Task<IEnumerable<Template>> GetAllTemplatesAsync() {
+        return await repository.GetAllAsync();
     }
 
-    public Task<Template?> GetTemplateByIdAsync(Guid templateId) {
-        throw new NotImplementedException();
+    public async Task<Template?> GetTemplateByIdAsync(Guid templateId) {
+        return await repository.GetByIdAsync(templateId);
     }
 
-    public Task<IEnumerable<Template>> GetTemplatesByUserIdAsync(Guid userId) {
-        throw new NotImplementedException();
+    public async Task<IEnumerable<Template>> GetTemplatesByUserIdAsync(Guid userId) {
+        var templates = await repository.GetByFieldAsync(t => t.UserId == userId);
+
+        if (templates == null) {
+            return Enumerable.Empty<Template>();
+        }
+        return [templates];
     }
 
-    public Task<bool> UpdateTemplateAsync(Guid templateId, Template updatedTemplate) {
-        throw new NotImplementedException();
+    public async Task<bool> UpdateTemplateAsync(Guid templateId, Template updatedTemplate) {
+        var existingTemplete = await repository.GetByIdAsync(templateId);
+        if (existingTemplete == null) {
+            return false;
+        }
+
+        existingTemplete.Title = updatedTemplate.Title;
+
+        await repository.UpdateAsync(existingTemplete);
+        return true;
     }
 }

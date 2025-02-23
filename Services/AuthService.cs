@@ -16,7 +16,9 @@ public class AuthService : IAuthService {
     public async Task<bool> AssignRoleAsync(Guid userId, string role) {
         var user = await repository.GetByIdAsync(userId);
 
-        if (user == null) return false;
+        if (user == null) {
+            return false;
+        }
 
         user.Role = role;
 
