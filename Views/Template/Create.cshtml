@@ -1,0 +1,114 @@
+@model TemplateViewModel
+
+@{
+    ViewData["Title"] = "Template Create Page";
+}
+
+<div class="container">
+    <h1 class="d-flex justify-content-center my-4">Create Template</h1>
+    <div class="d-flex flex-row">
+        <div class="flex-fill mx-2">
+            <h4 class="d-flex justify-content-center mb-2">Template Question Types</h4>
+            <div id="formList1" class="list-group border border-3 p-3">
+                <div class="list-group-item">Single-line Question</div>
+                <div class="list-group-item">Multi-line Question</div>
+                <div class="list-group-item">Number Question</div>
+                <div class="list-group-item">Checkbox Question</div>
+            </div>
+        </div>
+        <div class="flex-fill mx-2">
+            <form action="Create" method="post">
+                <h4 class="d-flex justify-content-center mb-2">Your Template Form</h4>
+                <div class="form-floating mb-2">
+                    <input type="text" id="title" asp-for="Title" class="form-control">
+                    <label for="title">Title</label>
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+                <div class="form-floating mb-2">
+                    <input type="text" id="description" asp-for="Description" class="form-control">
+                    <label for="description">Description</label>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+                <div class="form-floating mb-2">
+                    <select class="form-select" id="topic" asp-for="Topic">
+                        <option value="Education">Education</option>
+                        <option value="Business">Business</option>
+                        <option value="General">General</option>
+                        <option value="Personal">Personal</option>
+                    </select>
+                    <label for="topic">Select A Topic</label>
+                </div>
+                <div class="input-group mb-2">
+                    <input type="radio" class="btn-outline-primary" name="IsPublic" asp-for="IsPublic" value="true"
+                        id="option1" autocomplete="off" checked>
+                    <label for="option1" class="btn">Is Public</label>
+
+                    <input type="radio" class="btn-outline-primary" name="IsPublic" asp-for="IsPublic" value="false"
+                        id="option2" autocomplete="off">
+                    <label for="option2" class="btn">Is Not Public</label>
+                </div>
+                <h5>Add Question </h5>
+                <div id="formList2" class="list-group border-3 border p-3">
+
+                </div>
+
+                <div id="hiddenInputs"></div>
+
+                <button type="submit" class="btn btn-primary mt-3">Create</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        new Sortable(document.getElementById("formList1"), {
+            group: {
+                name: 'shared',
+                pull: 'clone',
+                put: false
+            },
+            sort: false,
+            animation: 150
+        });
+
+        new Sortable(document.getElementById("formList2"), {
+            group: {
+                name: 'shared',
+                pull: true
+            },
+            animation: 150,
+            onAdd: function (evt) {
+                let item = evt.item;
+                item.classList.add("d-flex", "justify-content-between", "align-items-center");
+                let removeBtn = document.createElement("button");
+                removeBtn.className = "btn btn-sm btn-danger";
+                removeBtn.innerHTML = "Remove";
+                removeBtn.onclick = function () {
+                    item.remove();
+                    UpdateHiddenInputs();
+                };
+                item.appendChild(removeBtn);
+
+                UpdateHiddenInputs();
+            },
+            onSort: function () {
+                UpdateHiddenInputs();
+            }
+        });
+
+        function UpdateHiddenInputs() {
+            let formList2 = document.querySelectorAll("#formList2 .list-group-item");
+            let hiddenInputs = document.getElementById("hiddenInputs");
+            hiddenInputs.innerHTML = "";
+
+            formList2.forEach((item, index) => {
+                let input = document.createElement("input");
+                input.type = "hidden";
+                input.name = `QuestionTypes[${index}]`;
+                input.value = item.childNodes[0].nodeValue.trim();
+                hiddenInputs.appendChild(input);
+            })
+        }
+    </script>
+}
