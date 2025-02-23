@@ -42,4 +42,8 @@ public class Repository<T> : IRepository<T> where T : class {
     public async Task<T?> GetByFieldAsync(Expression<Func<T, bool>> expression) {
         return await dbSet.FirstOrDefaultAsync(expression);
     }
+
+    public async Task<IEnumerable<T>> GetManyByFieldAsync(Expression<Func<T, bool>> expression) {
+        return await dbSet.Where(expression).ToListAsync();
+    }
 }
