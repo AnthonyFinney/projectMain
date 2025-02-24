@@ -9,4 +9,5 @@ public interface IAdminService {
     Task<bool> DeleteUserAsync(Guid userId);
     Task<IEnumerable<Template>> GetAllTemplatesAsync();
     Task<bool> DeleteTemplateAsync(Guid templateId);
+    Task<bool> AssignRoleAsync(Guid userId, string role);
 }

@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HCA
+
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -23,15 +25,25 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link text-white bg-primary me-2" href="@Url.Action("Login", "Auth")">Login</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white me-2" href="@Url.Action("Profile", "Auth")">Profile</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white me-2" href="@Url.Action("Create", "Template")">Create Template</a>
-                    </li>
+                    @if (string.IsNullOrEmpty(HCA.HttpContext?.Session.GetString("UserId")))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link text-white bg-primary me-2" href="@Url.Action("Login", "Auth")">Login</a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link text-white me-2"
+                                href="@Url.Action("Profile", "Auth", new { id = HCA.HttpContext.Session.GetString("UserId") })">Profile</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white me-2" href="@Url.Action("Create", "Template")">Create Template</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white bg-primary me-2" href="@Url.Action("Logout", "Auth")">Logout</a>
+                        </li>
+                    }
                 </ul>
             </div>
         </div>

@@ -13,19 +13,6 @@ public class AuthService : IAuthService {
         this.httpContextAccessor = httpContextAccessor;
     }
 
-    public async Task<bool> AssignRoleAsync(Guid userId, string role) {
-        var user = await repository.GetByIdAsync(userId);
-
-        if (user == null) {
-            return false;
-        }
-
-        user.Role = role;
-
-        await repository.UpdateAsync(user);
-        return true;
-    }
-
     public async Task<User?> GetUserByIdAsync(Guid userId) {
         return await repository.GetByIdAsync(userId);
     }
@@ -34,19 +21,18 @@ public class AuthService : IAuthService {
         return await repository.GetByFieldAsync(user => user.Username == username);
     }
 
-    public async Task<string?> LoginAsync(string username, string password) {
+    public async Task<bool> LoginAsync(string username, string password) {
         var user = await repository.GetByFieldAsync(user => user.Username == username);
 
         if (user == null || !BCrypt.Net.BCrypt.Verify(password, user.PasswordHash)) {
-            return "Invalid name or password";
+            return false;
         }
 
         var session = httpContextAccessor?.HttpContext?.Session;
         session?.SetString("UserId", user.Id.ToString());
         session?.SetString("Username", username);
         session?.SetString("Role", user.Role);
-
-        return user.Username;
+        return true;
     }
 
     public Task LogoutAsync() {

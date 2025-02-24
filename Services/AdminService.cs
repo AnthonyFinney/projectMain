@@ -63,4 +63,17 @@ public class AdminService : IAdminService {
     public async Task<IEnumerable<User>> GetAllUsersAsync() {
         return await userRepository.GetAllAsync();
     }
+
+    public async Task<bool> AssignRoleAsync(Guid userId, string role) {
+        var user = await userRepository.GetByIdAsync(userId);
+
+        if (user == null) {
+            return false;
+        }
+
+        user.Role = role;
+
+        await userRepository.UpdateAsync(user);
+        return true;
+    }
 }
