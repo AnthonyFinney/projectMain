@@ -39,12 +39,12 @@ public class TemplateService : ITemplateService {
     }
 
     public async Task<IEnumerable<Template>> GetTemplatesByUserIdAsync(Guid userId) {
-        var templates = await repository.GetByFieldAsync(t => t.UserId == userId);
+        var templates = await repository.GetManyByFieldAsync(t => t.UserId == userId);
 
         if (templates == null) {
             return Enumerable.Empty<Template>();
         }
-        return [templates];
+        return templates;
     }
 
     public async Task<bool> UpdateTemplateAsync(Guid templateId, Template updatedTemplate) {

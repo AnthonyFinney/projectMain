@@ -20,6 +20,7 @@ builder.Services.AddScoped<IFormService, FormService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IAdminService, AdminService>();
+builder.Services.AddScoped<IAnswerService, AnswerService>();
 
 builder.Services.AddHttpContextAccessor();
 

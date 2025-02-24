@@ -31,12 +31,12 @@ public class CommentService : ICommentService {
     }
 
     public async Task<IEnumerable<Comment>> GetCommentsByTemplateIdAsync(Guid templateId) {
-        var comment = await repository.GetByFieldAsync(c => c.TemplateId == templateId);
+        var comment = await repository.GetManyByFieldAsync(c => c.TemplateId == templateId);
 
         if (comment == null) {
             return Enumerable.Empty<Comment>();
         }
-        return [comment];
+        return comment;
     }
 
     public async Task<bool> UpdateCommentAsync(Guid commentId, string newText) {
