@@ -63,7 +63,7 @@ public class AuthService : IAuthService {
         return true;
     }
 
-    public async Task<bool> UpdateProfileAsync(Guid userId, string? newUsername, string? password, string? newRole) {
+    public async Task<bool> UpdateProfileAsync(Guid userId, string? newUsername, string? password) {
         var user = await repository.GetByIdAsync(userId);
         if (user == null) {
             return false;
@@ -80,18 +80,12 @@ public class AuthService : IAuthService {
         if (!string.IsNullOrEmpty(password)) {
             user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(password);
         }
-        if (!string.IsNullOrEmpty(newRole)) {
-            user.Role = newRole;
-        }
 
         await repository.UpdateAsync(user);
 
         var session = httpContextAccessor?.HttpContext?.Session;
         if (!string.IsNullOrEmpty(user.Username)) {
             session?.SetString("Username", user.Username);
-        }
-        if (!string.IsNullOrEmpty(user.Role)) {
-            session?.SetString("Role", user.Role);
         }
 
         return true;

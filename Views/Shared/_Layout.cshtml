@@ -15,7 +15,7 @@
 <body>
     <nav class="navbar navbar-expand-lg bg-body-tertiary bg-black">
         <div class="container-fluid">
-            <a class="navbar-brand text-white" href="@Url.Action("Index", "Home")">Navbar</a>
+            <a class="navbar-brand text-white" href="@Url.Action("Index", "Home")">ProjectMain</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="text-white"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -38,8 +38,7 @@
                     else
                     {
                         <li class="nav-item">
-                            <a class="nav-link text-white me-2"
-                                href="@Url.Action("Profile", "Auth", new { id = HCA.HttpContext.Session.GetString("UserId") })">Profile</a>
+                            <a class="nav-link text-white me-2" href="@Url.Action("Profile", "Auth")">Profile</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-white me-2" href="@Url.Action("Create", "Template")">Create Template</a>
@@ -47,6 +46,12 @@
                         <li class="nav-item">
                             <a class="nav-link text-white bg-primary me-2" href="@Url.Action("Logout", "Auth")">Logout</a>
                         </li>
+                        @if (HCA.HttpContext?.Session.GetString("Role") == "Admin")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-white me-2 ms-5 bg-info" href="@Url.Action("Index", "Admin")">Admin</a>
+                            </li>
+                        }
                     }
                 </ul>
             </div>

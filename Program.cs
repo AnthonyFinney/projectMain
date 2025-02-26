@@ -32,6 +32,7 @@ if (!app.Environment.IsDevelopment()) {
 
 var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
 var host = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development" ? "localhost" : "0.0.0.0";
+
 app.Urls.Add($"http://{host}:{port}");
 
 app.UseHttpsRedirection();

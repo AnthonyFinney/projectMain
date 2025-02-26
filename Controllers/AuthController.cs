@@ -58,8 +58,41 @@ public class AuthController : Controller {
         return RedirectToAction("Index", "Home");
     }
 
-    [Route("Auth/Profile/{id}")]
+    [Route("Auth/Profile")]
     public IActionResult Profile(string id) {
         return View();
+    }
+
+    [HttpPost("Auth/Profile")]
+    public async Task<IActionResult> Profile(ProfileViewModel model) {
+        var userId = Guid.Parse(HttpContext.Session.GetString("UserId"));
+        var result = await authService.UpdateProfileAsync(userId, model.Name, model.Password);
+        if (result == false) {
+            ModelState.AddModelError("", "User already exists");
+            return View(model);
+        }
+
+        return RedirectToAction("Index", "Home");
+    }
+
+    [HttpGet("Auth/GetUserById/{id}")]
+    public async Task<IActionResult> GetUserById(string id) {
+        var userId = Guid.Parse(HttpContext.Session.GetString("UserId"));
+        var user = await authService.GetUserByIdAsync(userId);
+        if (user == null) {
+            return NotFound(new { message = "User Not Found" });
+        }
+
+        return Ok(user);
+    }
+
+    [HttpGet("Auth/GetUserByUsername/{username}")]
+    public async Task<IActionResult> GetUserByUsername(string username) {
+        var user = await authService.GetUserByUsernameAsync(username);
+        if (user == null) {
+            return NotFound(new { message = "User Not Found" });
+        }
+
+        return Ok(user);
     }
 }

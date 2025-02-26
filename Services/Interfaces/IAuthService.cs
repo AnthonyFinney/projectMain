@@ -8,5 +8,5 @@ public interface IAuthService {
     Task<bool> LogoutAsync();
     Task<User?> GetUserByIdAsync(Guid userId);
     Task<User?> GetUserByUsernameAsync(string username);
-    Task<bool> UpdateProfileAsync(Guid userId, string? newUsername, string? password, string? newRole);
+    Task<bool> UpdateProfileAsync(Guid userId, string? newUsername, string? password);
 }
