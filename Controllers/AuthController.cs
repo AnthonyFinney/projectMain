@@ -1,6 +1,4 @@
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using ProjectMain.Services.Interfaces;
 using ProjectMain.ViewModels;
 
@@ -52,6 +50,12 @@ public class AuthController : Controller {
         }
 
         return RedirectToAction("Login", "Auth");
+    }
+
+    [Route("Auth/Logout")]
+    public async Task<IActionResult> Logout() {
+        bool result = await authService.LogoutAsync();
+        return RedirectToAction("Index", "Home");
     }
 
     [Route("Auth/Profile/{id}")]

@@ -30,7 +30,7 @@ if (!app.Environment.IsDevelopment()) {
     app.UseExceptionHandler("/Home/Error");
 }
 
-var port = Environment.GetEnvironmentVariable("PORT") ?? "8000";
+var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
 app.Urls.Add($"http://0.0.0.0:{port}");
 
 app.UseHttpsRedirection();

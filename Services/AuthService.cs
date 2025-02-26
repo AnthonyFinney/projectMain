@@ -35,9 +35,13 @@ public class AuthService : IAuthService {
         return true;
     }
 
-    public Task LogoutAsync() {
+    public Task<bool> LogoutAsync() {
+        if (httpContextAccessor?.HttpContext?.Session == null) {
+            return Task.FromResult(false);
+        }
+
         httpContextAccessor?.HttpContext?.Session.Clear();
-        return Task.CompletedTask;
+        return Task.FromResult(true);
     }
 
     public async Task<bool> RegisterAsync(string username, string email, string password) {
@@ -51,7 +55,6 @@ public class AuthService : IAuthService {
             Username = username,
             Email = email,
             PasswordHash = BCrypt.Net.BCrypt.HashPassword(password),
-            Role = "Admin",
             CreatedAt = DateTime.UtcNow,
             UpdateAt = DateTime.UtcNow
         };
