@@ -15,6 +15,5 @@ public class TemplateViewModel {
     [Required(ErrorMessage = "Select Visibility")]
     public bool? IsPublic { get; set; }
 
-    public int? Order { get; set; }
     public List<string> QuestionTypes { get; set; } = [];
 }

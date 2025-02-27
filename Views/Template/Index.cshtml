@@ -1,7 +1,42 @@
+@model List<TemplateViewModel>
+
 @{
     ViewData["Title"] = "Template Page";
 }
 
-<div>
-    <h1>Template</h1>
+<div class="container">
+    <h1 class="text-center mt-3">Template</h1>
+    <div class="my-3">
+        <a class="btn btn-outline-primary me-2" href="@Url.Action("Create", "Template")">Create Template</a>
+    </div>
+    <h3 class="mt-4">Template List</h3>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Topic</th>
+                <th>Is Public</th>
+                <th>Question Types</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var template in Model)
+            {
+                <tr>
+                    <td>@template.Title</td>
+                    <td>@template.Description</td>
+                    <td>@template.Topic</td>
+                    <td>@(template.IsPublic.HasValue ? (template.IsPublic.Value ? "Yes" : "No") : "Unknown")</td>
+                    <td>@string.Join(", ", template.QuestionTypes)</td>
+                    <td>
+                        <a class="btn btn-success btn-sm" href="@Url.Action("Index", "Form")">
+                            Create Form
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 </div>

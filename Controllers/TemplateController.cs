@@ -6,7 +6,24 @@ namespace ProjectMain.Controllers;
 public class TemplateController : Controller {
     [Route("Template/Index")]
     public IActionResult Index() {
-        return View();
+        var templates = new List<TemplateViewModel> {
+            new() {
+                Title = "Sample Title",
+                Description = "Sample Description",
+                Topic = "Sample Topic",
+                IsPublic = true,
+                QuestionTypes = new List<string> { "Multiple Choice", "Short Answer" }
+            },
+            new() {
+                Title = "Another Template",
+                Description = "Another Description",
+                Topic = "Another Topic",
+                IsPublic = false,
+                QuestionTypes = new List<string> { "Essay", "True/False" }
+            }
+        };
+
+        return View(templates);
     }
 
     [Route("Template/Details/{id:guid}")]

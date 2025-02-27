@@ -2,9 +2,42 @@
     ViewData["Title"] = "Admin Page";
 }
 
-<div>
+<div class="container">
     <h1 class="text-center mt-4">Admin</h1>
-    <div>
-
+    <div class="my-3">
+        <a class="btn btn-outline-danger me-2">Manage Template</a>
+        <a class="btn btn-outline-primary">Mannage User</a>
     </div>
+    <h3 class="mt-4">User List</h3>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td>A</td>
+                <td>B</td>
+                <td>C</td>
+                <td>
+                    <div>
+                        <a class="btn btn-info btn-sm" href="@Url.Action("ManageUser", "Admin")">Details</a>
+                        <a class="btn btn-info btn-sm" href="@Url.Action("ManageUser", "Admin")">Details</a>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
 </div>
+
+@section Scripts {
+    <script>
+
+    </script>
+}
