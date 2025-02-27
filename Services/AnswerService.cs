@@ -11,41 +11,23 @@ public class AnswerService : IAnswerService {
         this.repository = repository;
     }
 
-    public async Task<bool> AddAnswerAsync(Answer answer) {
-        if (answer == null) {
-            return false;
-        }
-
-        await repository.AddAsync(answer);
-        return true;
+    public Task<bool> AddAnswerAsync(Answer answer) {
+        throw new NotImplementedException();
     }
 
-    public async Task<bool> DeleteAnswerAsync(Guid id) {
-        var answer = await repository.GetByIdAsync(id);
-        if (answer == null) {
-            return false;
-        }
-
-        await repository.DeleteAsync(answer.Id);
-        return true;
+    public Task<bool> DeleteAnswerAsync(Guid id) {
+        throw new NotImplementedException();
     }
 
-    public async Task<Answer?> GetAnswerByIdAsync(Guid id) {
-        return await repository.GetByIdAsync(id);
+    public Task<Answer?> GetAnswerByIdAsync(Guid id) {
+        throw new NotImplementedException();
     }
 
-    public async Task<IEnumerable<Answer>> GetAnswersByFormIdAsync(Guid formId) {
-        return await repository.GetManyByFieldAsync(a => a.FormId == formId);
+    public Task<IEnumerable<Answer>> GetAnswersByFormIdAsync(Guid formId) {
+        throw new NotImplementedException();
     }
 
-    public async Task<bool> UpdateAnswerAsync(Guid id, Answer answer) {
-        var existingAnswer = await repository.GetByIdAsync(id);
-        if (existingAnswer == null) {
-            return false;
-        }
-
-        existingAnswer = answer;
-        await repository.UpdateAsync(existingAnswer);
-        return true;
+    public Task<bool> UpdateAnswerAsync(Guid id, Answer answer) {
+        throw new NotImplementedException();
     }
 }

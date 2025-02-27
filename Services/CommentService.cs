@@ -11,43 +11,19 @@ public class CommentService : ICommentService {
         this.repository = repository;
     }
 
-    public async Task<bool> AddCommentAsync(Comment comment) {
-        if (comment == null) {
-            return false;
-        }
-
-        await repository.AddAsync(comment);
-        return true;
+    public Task<bool> AddCommentAsync(Comment comment) {
+        throw new NotImplementedException();
     }
 
-    public async Task<bool> DeleteCommentAsync(Guid commentId) {
-        var comment = await repository.GetByIdAsync(commentId);
-        if (comment == null) {
-            return false;
-        }
-
-        await repository.DeleteAsync(commentId);
-        return true;
+    public Task<bool> DeleteCommentAsync(Guid commentId) {
+        throw new NotImplementedException();
     }
 
-    public async Task<IEnumerable<Comment>> GetCommentsByTemplateIdAsync(Guid templateId) {
-        var comment = await repository.GetManyByFieldAsync(c => c.TemplateId == templateId);
-
-        if (comment == null) {
-            return Enumerable.Empty<Comment>();
-        }
-        return comment;
+    public Task<IEnumerable<Comment>> GetCommentsByTemplateIdAsync(Guid templateId) {
+        throw new NotImplementedException();
     }
 
-    public async Task<bool> UpdateCommentAsync(Guid commentId, string newText) {
-        var existingComment = await repository.GetByIdAsync(commentId);
-        if (existingComment == null) {
-            return false;
-        }
-
-        existingComment.Text = newText;
-
-        await repository.UpdateAsync(existingComment);
-        return true;
+    public Task<bool> UpdateCommentAsync(Guid commentId, string newText) {
+        throw new NotImplementedException();
     }
 }

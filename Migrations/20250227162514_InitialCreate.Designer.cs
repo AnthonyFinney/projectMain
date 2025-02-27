@@ -12,8 +12,8 @@ using ProjectMain.Data;
 namespace ProjectMain.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250223162239_AddIsBannedToUser")]
-    partial class AddIsBannedToUser
+    [Migration("20250227162514_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -42,9 +42,7 @@ namespace ProjectMain.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FormId");
-
-                    b.HasIndex("QuestionId");
+                    b.HasIndex("FormId", "QuestionId");
 
                     b.ToTable("Answers");
                 });
@@ -58,7 +56,7 @@ namespace ProjectMain.Migrations
                     b.Property<DateTime>("CreateAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("TemplateId")
+                    b.Property<Guid>("FormId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Text")
@@ -69,7 +67,7 @@ namespace ProjectMain.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TemplateId");
+                    b.HasIndex("FormId");
 
                     b.HasIndex("UserId");
 
@@ -100,24 +98,45 @@ namespace ProjectMain.Migrations
                     b.ToTable("Forms");
                 });
 
+            modelBuilder.Entity("ProjectMain.Models.FormQuestion", b =>
+                {
+                    b.Property<Guid>("FormId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("QuestionId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("QuestionType")
+                        .HasColumnType("int");
+
+                    b.HasKey("FormId", "QuestionId");
+
+                    b.HasIndex("QuestionId");
+
+                    b.ToTable("FormQuestion");
+                });
+
             modelBuilder.Entity("ProjectMain.Models.Like", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("FormId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<bool>("IsLike")
                         .HasColumnType("bit");
-
-                    b.Property<Guid>("TemplateId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TemplateId");
+                    b.HasIndex("FormId");
 
                     b.HasIndex("UserId");
 
@@ -130,20 +149,14 @@ namespace ProjectMain.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("Order")
                         .HasColumnType("int");
 
-                    b.Property<string>("QuestionType")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("QuestionType")
+                        .HasColumnType("int");
 
                     b.Property<Guid>("TemplateId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -200,7 +213,7 @@ namespace ProjectMain.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
@@ -218,15 +231,9 @@ namespace ProjectMain.Migrations
 
                     b.Property<string>("Username")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Email")
-                        .IsUnique();
-
-                    b.HasIndex("Username")
-                        .IsUnique();
 
                     b.ToTable("Users");
                 });
@@ -254,22 +261,22 @@ namespace ProjectMain.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("ProjectMain.Models.Question", "Question")
+                    b.HasOne("ProjectMain.Models.FormQuestion", "FormQuestion")
                         .WithMany("Answers")
-                        .HasForeignKey("QuestionId")
+                        .HasForeignKey("FormId", "QuestionId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Form");
 
-                    b.Navigation("Question");
+                    b.Navigation("FormQuestion");
                 });
 
             modelBuilder.Entity("ProjectMain.Models.Comment", b =>
                 {
-                    b.HasOne("ProjectMain.Models.Template", "Template")
+                    b.HasOne("ProjectMain.Models.Form", "Form")
                         .WithMany("Comments")
-                        .HasForeignKey("TemplateId")
+                        .HasForeignKey("FormId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
@@ -279,7 +286,7 @@ namespace ProjectMain.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("Template");
+                    b.Navigation("Form");
 
                     b.Navigation("User");
                 });
@@ -303,11 +310,30 @@ namespace ProjectMain.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("ProjectMain.Models.FormQuestion", b =>
+                {
+                    b.HasOne("ProjectMain.Models.Form", "Form")
+                        .WithMany("FormQuestions")
+                        .HasForeignKey("FormId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("ProjectMain.Models.Question", "Question")
+                        .WithMany()
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Form");
+
+                    b.Navigation("Question");
+                });
+
             modelBuilder.Entity("ProjectMain.Models.Like", b =>
                 {
-                    b.HasOne("ProjectMain.Models.Template", "Template")
+                    b.HasOne("ProjectMain.Models.Form", "Form")
                         .WithMany("Likes")
-                        .HasForeignKey("TemplateId")
+                        .HasForeignKey("FormId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
@@ -317,7 +343,7 @@ namespace ProjectMain.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("Template");
+                    b.Navigation("Form");
 
                     b.Navigation("User");
                 });
@@ -366,20 +392,22 @@ namespace ProjectMain.Migrations
             modelBuilder.Entity("ProjectMain.Models.Form", b =>
                 {
                     b.Navigation("Answers");
+
+                    b.Navigation("Comments");
+
+                    b.Navigation("FormQuestions");
+
+                    b.Navigation("Likes");
                 });
 
-            modelBuilder.Entity("ProjectMain.Models.Question", b =>
+            modelBuilder.Entity("ProjectMain.Models.FormQuestion", b =>
                 {
                     b.Navigation("Answers");
                 });
 
             modelBuilder.Entity("ProjectMain.Models.Template", b =>
                 {
-                    b.Navigation("Comments");
-
                     b.Navigation("Forms");
-
-                    b.Navigation("Likes");
 
                     b.Navigation("Questions");
 

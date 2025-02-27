@@ -11,34 +11,23 @@ public class FormService : IFormService {
         this.repository = repository;
     }
 
-    public async Task<bool> DeleteFormAsync(Guid formId) {
-        var form = await repository.GetByIdAsync(formId);
-        if (form == null) {
-            return false;
-        }
-
-        await repository.DeleteAsync(formId);
-        return true;
+    public Task<bool> DeleteFormAsync(Guid formId) {
+        throw new NotImplementedException();
     }
 
-    public async Task<Form?> GetFormByIdAsync(Guid formId) {
-        return await repository.GetByIdAsync(formId);
+    public Task<Form?> GetFormByIdAsync(Guid formId) {
+        throw new NotImplementedException();
     }
 
-    public async Task<IEnumerable<Form>> GetFormsByTemplateIdAsync(Guid templateId) {
-        return await repository.GetManyByFieldAsync(f => f.TemplateId == templateId);
+    public Task<IEnumerable<Form>> GetFormsByTemplateIdAsync(Guid templateId) {
+        throw new NotImplementedException();
     }
 
-    public async Task<IEnumerable<Form>> GetFormsByUserIdAsync(Guid userId) {
-        return await repository.GetManyByFieldAsync(f => f.UserId == userId);
+    public Task<IEnumerable<Form>> GetFormsByUserIdAsync(Guid userId) {
+        throw new NotImplementedException();
     }
 
-    public async Task<bool> SubmitFormAsync(Form form) {
-        if (form == null) {
-            return false;
-        }
-
-        await repository.AddAsync(form);
-        return true;
+    public Task<bool> SubmitFormAsync(Form form) {
+        throw new NotImplementedException();
     }
 }

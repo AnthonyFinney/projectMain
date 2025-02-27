@@ -7,5 +7,5 @@ public class Answer {
     public string? Value { get; set; }
 
     public Form? Form { get; set; }
-    public Question? Question { get; set; }
+    public FormQuestion? FormQuestion { get; set; }
 }
