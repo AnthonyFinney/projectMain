@@ -35,7 +35,12 @@ public class TemplateService : ITemplateService {
     }
 
     public async Task<Template?> GetTemplateByIdAsync(Guid templateId) {
-        return await repository.GetByIdAsync(templateId);
+        var template = await repository.GetByFieldAsync(t => t.Id == templateId, t => t.Questions);
+        foreach (var question in template.Questions) {
+            question.Template = null;
+        }
+
+        return template;
     }
 
     public async Task<IEnumerable<Template>> GetTemplatesByUserIdAsync(Guid userId) {

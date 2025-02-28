@@ -1,7 +1,90 @@
+@model TemplateViewModel
+
 @{
     ViewData["Title"] = "Form Create Page";
 }
 
-<div>
-    <h1>Create</h1>
+<div class="container mt-4 p-4 shadow-lg rounded bg-light">
+    <h1 class="text-center mb-4 text-primary">Create Form</h1>
+
+    <div class="card p-3 mb-4">
+        <h3 class="text-secondary">Template Title: @Model.Title</h3>
+        <h4 class="text-muted">Template Topic: @Model.Topic</h4>
+        <p class="lead">Template Description: @Model.Description</p>
+    </div>
+
+    @foreach (var question in Model.QuestionTypes)
+    {
+        <div class="mb-3">
+            @if (question == "ShortAnswer")
+            {
+                <input type="text" class="form-control" placeholder="Enter your answer...">
+            }
+            else if (question == "Paragraph")
+            {
+                <textarea class="form-control" rows="4" placeholder="Enter your response..."></textarea>
+            }
+            else if (question == "MultipleChoice")
+            {
+                <div id="multipleChoiceContainer_@Model.Id">
+                </div>
+                <button type="button" class="btn btn-sm btn-primary mt-2" onclick="addOption('@Model.Id', 'multipleChoice')">Add
+                    Option</button>
+            }
+            else if (question == "Checkbox")
+            {
+                <div id="checkboxContainer_@Model.Id">
+                </div>
+                <button type="button" class="btn btn-sm btn-primary mt-2" onclick="addOption('@Model.Id', 'checkbox')">Add
+                    Option</button>
+            }
+            else if (question == "Dropdown")
+            {
+                <select class="form-select" id="dropdownSelect_@Model.Id">
+                    <option selected>Select an option</option>
+                </select>
+                <button type="button" class="btn btn-sm btn-primary mt-2" onclick="addOption('@Model.Id', 'dropdown')">Add
+                    Option</button>
+            }
+        </div>
+    }
 </div>
+
+@section Scripts {
+    <script>
+        function addOption(questionId, type) {
+            let container, newOption;
+
+            if (type === "multipleChoice") {
+                container = document.getElementById(`multipleChoiceContainer_${questionId}`);
+                newOption = document.createElement("div");
+                newOption.classList.add("form-check");
+                let optionCount = container.querySelectorAll(".form-check").length + 1;
+                newOption.innerHTML = `
+                        <input class="form-check-input" type="radio" name="multipleChoice_${questionId}" id="option_${questionId}_${optionCount}">
+                        <label class="form-check-label" for="option_${questionId}_${optionCount}">Option ${optionCount}</label>
+                    `;
+                container.appendChild(newOption);
+            }
+            else if (type === "checkbox") {
+                container = document.getElementById(`checkboxContainer_${questionId}`);
+                newOption = document.createElement("div");
+                newOption.classList.add("form-check");
+                let optionCount = container.querySelectorAll(".form-check").length + 1;
+                newOption.innerHTML = `
+                        <input class="form-check-input" type="checkbox" id="checkbox_${questionId}_${optionCount}">
+                        <label class="form-check-label" for="checkbox_${questionId}_${optionCount}">Option ${optionCount}</label>
+                    `;
+                container.appendChild(newOption);
+            }
+            else if (type === "dropdown") {
+                container = document.getElementById(`dropdownSelect_${questionId}`);
+                let optionCount = container.options.length;
+                let newOptionElement = document.createElement("option");
+                newOptionElement.value = `Option ${optionCount}`;
+                newOptionElement.textContent = `Option ${optionCount}`;
+                container.appendChild(newOptionElement);
+            }
+        }
+    </script>
+}

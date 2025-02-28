@@ -5,6 +5,9 @@ public class Form {
     public Guid TemplateId { get; set; }
     public Guid UserId { get; set; }
     public DateTime CreateAt { get; set; }
+    public string? Title { get; set; }
+    public string? Description { get; set; }
+    public string? Topic { get; set; }
 
     public Template? Template { get; set; }
     public User? User { get; set; }

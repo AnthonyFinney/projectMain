@@ -33,7 +33,7 @@ public class FormService : IFormService {
         return await repository.GetManyByFieldAsync(f => f.UserId == userId);
     }
 
-    public async Task<bool> SubmitFormAsync(Form form) {
+    public async Task<bool> CreateFormAsync(Form form) {
         if (form == null) {
             return false;
         }

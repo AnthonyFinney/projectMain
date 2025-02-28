@@ -40,7 +40,7 @@ public class Repository<T> : IRepository<T> where T : class {
     }
 
     public async Task<T?> GetByFieldAsync(Expression<Func<T, bool>> expression, params Expression<Func<T, object>>[] includes) {
-        IQueryable<T> query = dbSet.Where(expression);
+        IQueryable<T> query = dbSet.Where(expression).AsNoTracking();
 
         foreach (var include in includes) {
             query = query.Include(include);
