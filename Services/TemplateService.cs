@@ -39,7 +39,13 @@ public class TemplateService : ITemplateService {
     }
 
     public async Task<IEnumerable<Template>> GetTemplatesByUserIdAsync(Guid userId) {
-        var templates = await repository.GetManyByFieldAsync(t => t.UserId == userId);
+        var templates = await repository.GetManyByFieldAsync(t => t.UserId == userId, t => t.Questions);
+
+        foreach (var template in templates) {
+            foreach (var question in template.Questions) {
+                question.Template = null;
+            }
+        }
 
         if (templates == null) {
             return Enumerable.Empty<Template>();

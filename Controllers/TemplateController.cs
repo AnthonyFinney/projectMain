@@ -1,34 +1,40 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using ProjectMain.Models;
+using ProjectMain.Services.Interfaces;
+using ProjectMain.Utilities;
 using ProjectMain.ViewModels;
 
 namespace ProjectMain.Controllers;
 
 public class TemplateController : Controller {
-    [Route("Template/Index")]
-    public IActionResult Index() {
-        var templates = new List<TemplateViewModel> {
-            new() {
-                Title = "Sample Title",
-                Description = "Sample Description",
-                Topic = "Sample Topic",
-                IsPublic = true,
-                QuestionTypes = new List<string> { "Multiple Choice", "Short Answer" }
-            },
-            new() {
-                Title = "Another Template",
-                Description = "Another Description",
-                Topic = "Another Topic",
-                IsPublic = false,
-                QuestionTypes = new List<string> { "Essay", "True/False" }
-            }
-        };
+    private readonly ITemplateService templateService;
 
-        return View(templates);
+    public TemplateController(ITemplateService templateService) {
+        this.templateService = templateService;
     }
 
-    [Route("Template/Details/{id:guid}")]
-    public IActionResult Details(Guid id) {
-        return View();
+    [Route("Template/Index")]
+    public async Task<IActionResult> Index() {
+        var userId = Guid.Parse(HttpContext.Session.GetString("UserId"));
+        var templates = await templateService.GetTemplatesByUserIdAsync(userId);
+
+        var templateVM = new List<TemplateViewModel>();
+
+        foreach (var template in templates) {
+            if (template.IsPublic) {
+                templateVM.Add(new TemplateViewModel {
+                    Id = template.Id,
+                    Title = template.Title,
+                    Description = template.Description,
+                    IsPublic = template.IsPublic,
+                    Topic = template.Topic,
+                    QuestionTypes = template.Questions.Select(q => q.QuestionType.ToString()).ToList()
+                });
+            }
+        }
+
+        return View(templateVM);
     }
 
     [Route("Template/Create")]
@@ -37,12 +43,34 @@ public class TemplateController : Controller {
     }
 
     [HttpPost("Template/Create")]
-    public IActionResult Create(TemplateViewModel model) {
+    public async Task<IActionResult> Create(TemplateViewModel model) {
         if (!ModelState.IsValid) {
             return View(model);
         }
 
-        return RedirectToAction("Index", "Home");
+        var userId = Guid.Parse(HttpContext.Session.GetString("UserId"));
+        var templateId = Guid.NewGuid();
+        var questions = model.QuestionTypes.Select((qt, index) => new Question {
+            Id = Guid.NewGuid(),
+            TemplateId = templateId,
+            QuestionType = HelperMethods.MapQuestionType(qt),
+            Order = index + 1
+        }).ToList();
+        var template = new Template {
+            Id = templateId,
+            Title = model.Title,
+            Description = model.Description,
+            Topic = model.Topic,
+            IsPublic = model.IsPublic,
+            UpdateAt = DateTime.UtcNow,
+            CreatedAt = DateTime.UtcNow,
+            UserId = userId,
+            Questions = questions
+        };
+
+        await templateService.CreateTemplateAsync(template);
+
+        return RedirectToAction("Index", "Template");
     }
 
     [Route("Template/Edit/{id:guid}")]

@@ -57,7 +57,6 @@ public class AuthService : IAuthService {
             PasswordHash = BCrypt.Net.BCrypt.HashPassword(password),
             CreatedAt = DateTime.UtcNow,
             UpdateAt = DateTime.UtcNow,
-            Role = "Admin"
         };
 
         await repository.AddAsync(user);

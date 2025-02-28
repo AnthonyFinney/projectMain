@@ -7,4 +7,9 @@ public class FormController : Controller {
     public IActionResult Index() {
         return View();
     }
+
+    [Route("Form/Create/{id}")]
+    public IActionResult Create(Guid id) {
+        return View();
+    }
 }

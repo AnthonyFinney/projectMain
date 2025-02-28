@@ -8,7 +8,7 @@ public interface IRepository<T> where T : class {
     Task<IEnumerable<T>> GetAllAsync();
     Task AddAsync(T entity);
     Task UpdateAsync(T entity);
-    Task<T?> GetByFieldAsync(Expression<Func<T, bool>> expression);
-    Task<IEnumerable<T>> GetManyByFieldAsync(Expression<Func<T, bool>> expression);
+    Task<T?> GetByFieldAsync(Expression<Func<T, bool>> expression, params Expression<Func<T, object>>[] includes);
+    Task<IEnumerable<T>> GetManyByFieldAsync(Expression<Func<T, bool>> expression, params Expression<Func<T, object>>[] includes);
     Task DeleteAsync(Guid id);
 }

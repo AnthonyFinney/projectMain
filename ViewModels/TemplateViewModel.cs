@@ -3,6 +3,8 @@ using System.ComponentModel.DataAnnotations;
 namespace ProjectMain.ViewModels;
 
 public class TemplateViewModel {
+    public Guid Id { get; set; }
+
     [Required(ErrorMessage = "Title required")]
     public string? Title { get; set; }
 
@@ -13,7 +15,7 @@ public class TemplateViewModel {
     public string? Topic { get; set; }
 
     [Required(ErrorMessage = "Select Visibility")]
-    public bool? IsPublic { get; set; }
+    public bool IsPublic { get; set; }
 
     public List<string> QuestionTypes { get; set; } = [];
 }

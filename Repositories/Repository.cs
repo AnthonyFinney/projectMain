@@ -39,11 +39,23 @@ public class Repository<T> : IRepository<T> where T : class {
         }
     }
 
-    public async Task<T?> GetByFieldAsync(Expression<Func<T, bool>> expression) {
-        return await dbSet.FirstOrDefaultAsync(expression);
+    public async Task<T?> GetByFieldAsync(Expression<Func<T, bool>> expression, params Expression<Func<T, object>>[] includes) {
+        IQueryable<T> query = dbSet.Where(expression);
+
+        foreach (var include in includes) {
+            query = query.Include(include);
+        }
+
+        return await query.FirstOrDefaultAsync();
     }
 
-    public async Task<IEnumerable<T>> GetManyByFieldAsync(Expression<Func<T, bool>> expression) {
-        return await dbSet.Where(expression).ToListAsync();
+    public async Task<IEnumerable<T>> GetManyByFieldAsync(Expression<Func<T, bool>> expression, params Expression<Func<T, object>>[] includes) {
+        IQueryable<T> query = dbSet.Where(expression).AsNoTracking();
+
+        foreach (var include in includes) {
+            query = query.Include(include);
+        }
+
+        return await query.ToListAsync();
     }
 }
