@@ -9,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<AppDbContext>(opts =>
-    opts.UseSqlServer(builder.Configuration.GetConnectionString("LocalDb")));
+    opts.UseSqlServer(builder.Configuration.GetConnectionString("SomeeDb")));
 
 builder.Services.AddSession();
 
