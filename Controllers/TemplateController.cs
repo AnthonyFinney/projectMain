@@ -48,6 +48,8 @@ public class TemplateController : Controller {
             return View(model);
         }
 
+        System.Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(model));
+
         var userId = Guid.Parse(HttpContext.Session.GetString("UserId"));
         var templateId = Guid.NewGuid();
         var questions = model.QuestionTypes.Select((qt, index) => new Question {
@@ -67,6 +69,8 @@ public class TemplateController : Controller {
             UserId = userId,
             Questions = questions
         };
+
+        System.Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(template));
 
         await templateService.CreateTemplateAsync(template);
 

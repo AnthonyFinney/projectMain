@@ -19,6 +19,12 @@ public class FormController : Controller {
         return View();
     }
 
+    [HttpPost("Form/CreateForm")]
+    public async Task<IActionResult> CreateForm() {
+        System.Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(Request.Form));
+        return RedirectToAction("Index", "Form");
+    }
+
     [Route("Form/Create/{id}")]
     public async Task<IActionResult> Create(Guid id) {
         var template = await templateService.GetTemplateByIdAsync(id);

@@ -12,79 +12,126 @@
         <h4 class="text-muted">Template Topic: @Model.Topic</h4>
         <p class="lead">Template Description: @Model.Description</p>
     </div>
-
-    @foreach (var question in Model.QuestionTypes)
-    {
-        <div class="mb-3">
-            @if (question == "ShortAnswer")
-            {
-                <input type="text" class="form-control" placeholder="Enter your answer...">
-            }
-            else if (question == "Paragraph")
-            {
-                <textarea class="form-control" rows="4" placeholder="Enter your response..."></textarea>
-            }
-            else if (question == "MultipleChoice")
-            {
-                <div id="multipleChoiceContainer_@Model.Id">
-                </div>
-                <button type="button" class="btn btn-sm btn-primary mt-2" onclick="addOption('@Model.Id', 'multipleChoice')">Add
-                    Option</button>
-            }
-            else if (question == "Checkbox")
-            {
-                <div id="checkboxContainer_@Model.Id">
-                </div>
-                <button type="button" class="btn btn-sm btn-primary mt-2" onclick="addOption('@Model.Id', 'checkbox')">Add
-                    Option</button>
-            }
-            else if (question == "Dropdown")
-            {
-                <select class="form-select" id="dropdownSelect_@Model.Id">
-                    <option selected>Select an option</option>
-                </select>
-                <button type="button" class="btn btn-sm btn-primary mt-2" onclick="addOption('@Model.Id', 'dropdown')">Add
-                    Option</button>
-            }
+    <form id="form-create" method="POST" action="/Form/CreateForm">
+        <div class="my-2 w-50">
+            <div class="my-2 w-50">
+                <h4>Enter Form Title</h4>
+                <label for="FormTitle" class="form-label">Form Title</label>
+                <input type="text" name="FormTitle" class="form-control" placeholder="Enter Title" id="FormTitle">
+            </div>
+            <div class="my-2 w-50">
+                <h4>Enter Form Description</h4>
+                <label for="FormDescription" class="form-label">Form Description</label>
+                <input type="text" name="FormDescription" class="form-control" placeholder="Enter Description"
+                    id="FormDescription">
+            </div>
+            <div class="my-2 w-50">
+                <h4>Enter Form Topic</h4>
+                <label for="FormTopic" class="form-label">Form Topic</label>
+                <input type="text" name="FormTopic" class="form-control" placeholder="Enter Topic" id="FormTopic">
+            </div>
         </div>
-    }
+
+        @foreach (var question in Model.QuestionTypes.Select((value, index) => new { value, index }))
+        {
+            <div class="mb-3">
+                <input type="hidden" name="Questions[@question.index].QuestionType" value="@question.value">
+
+                @if (question.value == "ShortAnswer")
+                {
+                    <h4>Add Your Short Question</h4>
+                    <input type="text" name="Questions[@question.index].QuestionText" class="form-control"
+                        placeholder="Enter Question">
+                }
+                else if (question.value == "Paragraph")
+                {
+                    <h4>Add Your Paragraph Question</h4>
+                    <textarea class="form-control" name="Questions[@question.index].QuestionText" rows="4"></textarea>
+                }
+                else if (question.value == "MultipleChoice" || question.value == "Checkbox" || question.value == "Dropdown")
+                {
+                    <h4>Add Your @question.value Question</h4>
+                    <input type="text" class="form-control" name="Questions[@question.index].QuestionText"
+                        placeholder="Enter Question">
+
+                    <div class="w-25" id="options-container-@question.index"></div>
+
+                    <div class="input-group w-25 my-2">
+                        <input type="text" name="Questions[@question.index].Options[0]" class="form-control me-3"
+                            placeholder="Enter Option">
+                        <button type="button" class="btn btn-sm btn-primary mt-2" data-index="@question.index">Add
+                            Option</button>
+                    </div>
+                }
+            </div>
+        }
+
+        <div class="container d-flex justify-content-center">
+            <button type="submit" class="btn btn-info btn-lg text-white">Create</button>
+        </div>
+    </form>
 </div>
 
 @section Scripts {
     <script>
-        function addOption(questionId, type) {
-            let container, newOption;
+        document.addEventListener("DOMContentLoaded", function () {
+            document.body.addEventListener("click", function (event) {
+                if (event.target.classList.contains("btn-primary")) {
+                    const questionIndex = event.target.getAttribute("data-index");
+                    const input = event.target.previousElementSibling;
+                    const container = document.querySelector(`#options-container-${questionIndex}`);
+                    const questionInput = event.target.closest(".mb-3").querySelector(`input[name='Questions[${questionIndex}].QuestionText']`);
 
-            if (type === "multipleChoice") {
-                container = document.getElementById(`multipleChoiceContainer_${questionId}`);
-                newOption = document.createElement("div");
-                newOption.classList.add("form-check");
-                let optionCount = container.querySelectorAll(".form-check").length + 1;
-                newOption.innerHTML = `
-                        <input class="form-check-input" type="radio" name="multipleChoice_${questionId}" id="option_${questionId}_${optionCount}">
-                        <label class="form-check-label" for="option_${questionId}_${optionCount}">Option ${optionCount}</label>
-                    `;
-                container.appendChild(newOption);
-            }
-            else if (type === "checkbox") {
-                container = document.getElementById(`checkboxContainer_${questionId}`);
-                newOption = document.createElement("div");
-                newOption.classList.add("form-check");
-                let optionCount = container.querySelectorAll(".form-check").length + 1;
-                newOption.innerHTML = `
-                        <input class="form-check-input" type="checkbox" id="checkbox_${questionId}_${optionCount}">
-                        <label class="form-check-label" for="checkbox_${questionId}_${optionCount}">Option ${optionCount}</label>
-                    `;
-                container.appendChild(newOption);
-            }
-            else if (type === "dropdown") {
-                container = document.getElementById(`dropdownSelect_${questionId}`);
-                let optionCount = container.options.length;
-                let newOptionElement = document.createElement("option");
-                newOptionElement.value = `Option ${optionCount}`;
-                newOptionElement.textContent = `Option ${optionCount}`;
-                container.appendChild(newOptionElement);
-            }
-        }
+                    if (input && container && input.value.trim() && questionInput) {
+                        const div = document.createElement("div");
+                        div.classList.add("option-item", "my-1", "p-2", "border", "rounded", "d-flex", "justify-content-between", "align-items-center");
+
+                        const hiddenInput = document.createElement("input");
+                        hiddenInput.type = "hidden";
+                        hiddenInput.name = `Questions[${questionIndex}].OptionsValue`;
+                        hiddenInput.value = input.value.trim();
+
+                        const textSpan = document.createElement("span");
+                        textSpan.textContent = input.value.trim();
+
+                        const removeButton = document.createElement("button");
+                        removeButton.textContent = "Remove";
+                        removeButton.classList.add("btn", "btn-sm", "btn-danger", "ms-2");
+
+                        div.appendChild(textSpan);
+                        div.appendChild(hiddenInput);
+                        div.appendChild(removeButton);
+                        container.appendChild(div);
+
+                        input.value = "";
+                    }
+                }
+
+                if (event.target.classList.contains("btn-danger")) {
+                    event.target.closest(".option-item").remove();
+                }
+            });
+
+            document.getElementById("form-create").addEventListener("submit", function (event) {
+                event.preventDefault();
+
+                document.querySelectorAll('input[name^="Questions"][name$="Options[0]"]').forEach(function (optionInput) {
+                    if (optionInput.value.trim() === '') {
+                        optionInput.remove();
+                    }
+                });
+
+                const formData = new FormData(this);
+
+                fetch(this.action, {
+                    method: "POST",
+                    body: formData
+                })
+                    .then(response => response.json())
+                    .catch(error => {
+                        console.error("Error submitting form:", error);
+                    });
+            });
+        });
     </script>
 }
